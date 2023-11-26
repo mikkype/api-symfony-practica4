@@ -1,0 +1,43 @@
+version: '3'
+services:
+  nginx:
+    build:
+       context: .
+       dockerfile: Dockerfile-nginx
+    volumes:
+      - ./symfony/:/var/www/symfony
+    ports:
+      -  8081:80
+    networks:
+      - symfony
+    depends_on:
+      - php
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile-php
+    volumes:
+      - ./symfony/:/var/www/symfony
+    networks:
+      - symfony
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql 
+    environment:
+      MYSQL_ROOT_PASSWORD: mike
+      MYSQL_DATABASE: instituto
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - 3309:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - symfony
+    
+
+volumes:
+  mysql:
+networks:
+  symfony:
